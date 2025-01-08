@@ -7,7 +7,7 @@ defmodule DonezoWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_donezo_key",
-    signing_salt: "LvaYMlqD",
+    signing_salt: "AyQGa5yu",
     same_site: "Lax"
   ]
 

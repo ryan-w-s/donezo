@@ -2,13 +2,10 @@ import Config
 
 # Configure your database
 config :donezo, Donezo.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "donezo_dev",
+  database: Path.expand("../donezo_dev.db", __DIR__),
+  pool_size: 5,
   stacktrace: true,
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+  show_sensitive_data_on_connection_error: true
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
@@ -23,7 +20,7 @@ config :donezo, DonezoWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "PFUkBqEGBBrbqWUPC/idxUkGo/7NVmFNZ08+BtmtNADXWgmFnSKLe6/Y3gJVqxAW",
+  secret_key_base: "644w48W+A8EER62Cr8/xtr5Ccq73ZL7HU8dl+3JIfDIqjM9UN0RVdM/TaJb/WQUk",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:donezo, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:donezo, ~w(--watch)]}

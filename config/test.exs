@@ -6,18 +6,15 @@ import Config
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :donezo, Donezo.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "donezo_test#{System.get_env("MIX_TEST_PARTITION")}",
-  pool: Ecto.Adapters.SQL.Sandbox,
-  pool_size: System.schedulers_online() * 2
+  database: Path.expand("../donezo_test.db", __DIR__),
+  pool_size: 5,
+  pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :donezo, DonezoWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "KTb5BjS46HlpwW/+e6yLVtzBm2Ev6qEvcxOyK4e3wQpz1biHjPUArVVOhB/blESL",
+  secret_key_base: "O4pn2ra1UNY9olPnmiHea4Wn4IDtaNdFaxg69R3DZ+LJaXaHEEqngtqJX1hDpzBK",
   server: false
 
 # In test we don't send emails

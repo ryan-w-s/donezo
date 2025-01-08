@@ -20,7 +20,7 @@ config :donezo, DonezoWeb.Endpoint,
     layout: false
   ],
   pubsub_server: Donezo.PubSub,
-  live_view: [signing_salt: "0FK0okF0"]
+  live_view: [signing_salt: "AfWSzX2x"]
 
 # Configures the mailer
 #
