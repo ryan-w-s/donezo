@@ -68,6 +68,16 @@ defmodule DonezoWeb.Router do
       on_mount: [{DonezoWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+      live "/lists", ListLive.Index, :index
+      live "/lists/new", ListLive.Index, :new
+      live "/lists/:id/edit", ListLive.Index, :edit
+      live "/lists/:id", ListLive.Show, :show
+      live "/lists/:id/show/edit", ListLive.Show, :edit
+      live "/lists/:list_id/buzzes", BuzzLive.Index, :index
+      live "/lists/:list_id/buzzes/new", BuzzLive.Index, :new
+      live "/lists/:list_id/buzzes/:id/edit", BuzzLive.Index, :edit
+      live "/lists/:list_id/buzzes/:id", BuzzLive.Show, :show
+      live "/lists/:list_id/buzzes/:id/show/edit", BuzzLive.Show, :edit
     end
   end
 

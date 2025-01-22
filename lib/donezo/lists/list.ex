@@ -4,9 +4,10 @@ defmodule Donezo.Lists.List do
 
   schema "lists" do
     field :title, :string
-    field :user_id, :id
+    belongs_to :user, Donezo.Accounts.User
+    has_many :buzzes, Donezo.Buzzes.Buzz
 
-    timestamps(type: :utc_datetime)
+    timestamps()
   end
 
   @doc false
