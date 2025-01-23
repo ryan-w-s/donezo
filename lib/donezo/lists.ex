@@ -17,8 +17,11 @@ defmodule Donezo.Lists do
       [%List{}, ...]
 
   """
-  def list_lists do
-    Repo.all(List)
+  def list_lists(user) do
+    List
+    |> where(user_id: ^user.id)
+    |> order_by([l], [asc: l.inserted_at])
+    |> Repo.all()
   end
 
   @doc """
@@ -35,7 +38,11 @@ defmodule Donezo.Lists do
       ** (Ecto.NoResultsError)
 
   """
-  def get_list!(id), do: Repo.get!(List, id)
+  def get_list!(id, user_id) do
+    List
+    |> where(id: ^id, user_id: ^user_id)
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a list.

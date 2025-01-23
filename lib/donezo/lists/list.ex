@@ -13,7 +13,8 @@ defmodule Donezo.Lists.List do
   @doc false
   def changeset(list, attrs) do
     list
-    |> cast(attrs, [:title])
-    |> validate_required([:title])
+    |> cast(attrs, [:title, :user_id])
+    |> validate_required([:title, :user_id])
+    |> foreign_key_constraint(:user_id)
   end
 end

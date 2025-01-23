@@ -1,7 +1,7 @@
 <.header>
   Listing Buzzes
   <:actions>
-    <.link patch={~p"/buzzes/new"}>
+    <.link patch={~p"/lists/#{@list_id}/buzzes/new"}>
       <.button>New Buzz</.button>
     </.link>
   </:actions>
@@ -10,16 +10,16 @@
 <.table
   id="buzzes"
   rows={@streams.buzzes}
-  row_click={fn {_id, buzz} -> JS.navigate(~p"/buzzes/#{buzz}") end}
+  row_click={fn {_id, buzz} -> JS.navigate(~p"/lists/#{@list_id}/buzzes/#{buzz}") end}
 >
   <:col :let={{_id, buzz}} label="Title">{buzz.title}</:col>
   <:col :let={{_id, buzz}} label="Completed">{buzz.completed}</:col>
   <:col :let={{_id, buzz}} label="Completed at">{buzz.completed_at}</:col>
   <:action :let={{_id, buzz}}>
     <div class="sr-only">
-      <.link navigate={~p"/buzzes/#{buzz}"}>Show</.link>
+      <.link navigate={~p"/lists/#{@list_id}/buzzes/#{buzz}"}>Show</.link>
     </div>
-    <.link patch={~p"/buzzes/#{buzz}/edit"}>Edit</.link>
+    <.link patch={~p"/lists/#{@list_id}/buzzes/#{buzz}/edit"}>Edit</.link>
   </:action>
   <:action :let={{id, buzz}}>
     <.link
@@ -31,13 +31,14 @@
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="buzz-modal" show on_cancel={JS.patch(~p"/buzzes")}>
+<.modal :if={@live_action in [:new, :edit]} id="buzz-modal" show on_cancel={JS.patch(~p"/lists/#{@list_id}/buzzes")}>
   <.live_component
     module={DonezoWeb.BuzzLive.FormComponent}
     id={@buzz.id || :new}
     title={@page_title}
     action={@live_action}
     buzz={@buzz}
-    patch={~p"/buzzes"}
+    list_id={@list_id}
+    patch={~p"/lists/#{@list_id}/buzzes"}
   />
 </.modal>

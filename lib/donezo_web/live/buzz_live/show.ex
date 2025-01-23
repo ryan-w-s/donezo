@@ -4,8 +4,8 @@ defmodule DonezoWeb.BuzzLive.Show do
   alias Donezo.Buzzes
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, socket}
+  def mount(%{"list_id" => list_id}, _session, socket) do
+    {:ok, assign(socket, :list_id, list_id)}
   end
 
   @impl true

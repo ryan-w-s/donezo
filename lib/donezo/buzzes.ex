@@ -101,4 +101,11 @@ defmodule Donezo.Buzzes do
   def change_buzz(%Buzz{} = buzz, attrs \\ %{}) do
     Buzz.changeset(buzz, attrs)
   end
+
+  def list_buzzes_for_list(list) do
+    Buzz
+    |> where(list_id: ^list.id)
+    |> order_by([b], [asc: b.inserted_at])
+    |> Repo.all()
+  end
 end

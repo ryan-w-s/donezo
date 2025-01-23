@@ -6,7 +6,12 @@ defmodule DonezoWeb.ListLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :lists, Lists.list_lists())}
+    lists = Lists.list_lists(socket.assigns.current_user)
+
+    {:ok,
+     socket
+     |> assign(:page_title, "Listing Lists")
+     |> stream(:lists, lists)}
   end
 
   @impl true
@@ -17,7 +22,7 @@ defmodule DonezoWeb.ListLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit List")
-    |> assign(:list, Lists.get_list!(id))
+    |> assign(:list, Lists.get_list!(id, socket.assigns.current_user.id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -34,14 +39,20 @@ defmodule DonezoWeb.ListLive.Index do
 
   @impl true
   def handle_info({DonezoWeb.ListLive.FormComponent, {:saved, list}}, socket) do
-    {:noreply, stream_insert(socket, :lists, list)}
+    {:noreply,
+     socket
+     |> put_flash(:info, "List saved successfully")
+     |> stream_insert(:lists, list)}
   end
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    list = Lists.get_list!(id)
+    list = Lists.get_list!(id, socket.assigns.current_user.id)
     {:ok, _} = Lists.delete_list(list)
 
-    {:noreply, stream_delete(socket, :lists, list)}
+    {:noreply,
+     socket
+     |> put_flash(:info, "List deleted successfully")
+     |> stream_delete(:lists, list)}
   end
 end

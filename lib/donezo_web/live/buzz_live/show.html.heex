@@ -2,7 +2,7 @@
   Buzz {@buzz.id}
   <:subtitle>This is a buzz record from your database.</:subtitle>
   <:actions>
-    <.link patch={~p"/buzzes/#{@buzz}/show/edit"} phx-click={JS.push_focus()}>
+    <.link patch={~p"/lists/#{@list_id}/buzzes/#{@buzz}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit buzz</.button>
     </.link>
   </:actions>
@@ -14,15 +14,16 @@
   <:item title="Completed at">{@buzz.completed_at}</:item>
 </.list>
 
-<.back navigate={~p"/buzzes"}>Back to buzzes</.back>
+<.back navigate={~p"/lists/#{@list_id}/buzzes"}>Back to buzzes</.back>
 
-<.modal :if={@live_action == :edit} id="buzz-modal" show on_cancel={JS.patch(~p"/buzzes/#{@buzz}")}>
+<.modal :if={@live_action == :edit} id="buzz-modal" show on_cancel={JS.patch(~p"/lists/#{@list_id}/buzzes/#{@buzz}")}>
   <.live_component
     module={DonezoWeb.BuzzLive.FormComponent}
     id={@buzz.id}
     title={@page_title}
     action={@live_action}
     buzz={@buzz}
-    patch={~p"/buzzes/#{@buzz}"}
+    list_id={@list_id}
+    patch={~p"/lists/#{@list_id}/buzzes/#{@buzz}"}
   />
 </.modal>

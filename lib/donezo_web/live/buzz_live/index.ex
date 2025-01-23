@@ -5,8 +5,11 @@ defmodule DonezoWeb.BuzzLive.Index do
   alias Donezo.Buzzes.Buzz
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, stream(socket, :buzzes, Buzzes.list_buzzes())}
+  def mount(%{"list_id" => list_id}, _session, socket) do
+    {:ok,
+     socket
+     |> assign(:list_id, list_id)
+     |> stream(:buzzes, Buzzes.list_buzzes_for_list(list_id))}
   end
 
   @impl true
@@ -23,7 +26,7 @@ defmodule DonezoWeb.BuzzLive.Index do
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Buzz")
-    |> assign(:buzz, %Buzz{})
+    |> assign(:buzz, %Buzz{list_id: socket.assigns.list_id})
   end
 
   defp apply_action(socket, :index, _params) do

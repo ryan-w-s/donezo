@@ -16,10 +16,15 @@ defmodule DonezoWeb.ListLive.FormComponent do
         for={@form}
         id="list-form"
         phx-target={@myself}
-        phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:title]} type="text" label="Title" />
+        <.input
+          field={@form[:title]}
+          type="text"
+          label="Title"
+          phx-debounce="blur"
+          phx-target={@myself}
+        />
         <:actions>
           <.button phx-disable-with="Saving...">Save List</.button>
         </:actions>
@@ -30,18 +35,22 @@ defmodule DonezoWeb.ListLive.FormComponent do
 
   @impl true
   def update(%{list: list} = assigns, socket) do
+    changeset = Lists.change_list(list)
+
     {:ok,
      socket
      |> assign(assigns)
-     |> assign_new(:form, fn ->
-       to_form(Lists.change_list(list))
-     end)}
+     |> assign(:form, to_form(changeset))}
   end
 
   @impl true
   def handle_event("validate", %{"list" => list_params}, socket) do
-    changeset = Lists.change_list(socket.assigns.list, list_params)
-    {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
+    changeset =
+      socket.assigns.list
+      |> Lists.change_list(list_params)
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign(socket, form: to_form(changeset))}
   end
 
   def handle_event("save", %{"list" => list_params}, socket) do
@@ -59,11 +68,13 @@ defmodule DonezoWeb.ListLive.FormComponent do
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, form: to_form(changeset))}
+        {:noreply, assign(socket, :form, to_form(changeset))}
     end
   end
 
   defp save_list(socket, :new, list_params) do
+    list_params = Map.put(list_params, "user_id", socket.assigns.current_user.id)
+
     case Lists.create_list(list_params) do
       {:ok, list} ->
         notify_parent({:saved, list})
@@ -74,7 +85,7 @@ defmodule DonezoWeb.ListLive.FormComponent do
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, form: to_form(changeset))}
+        {:noreply, assign(socket, :form, to_form(changeset))}
     end
   end
 
