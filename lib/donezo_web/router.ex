@@ -73,6 +73,7 @@ defmodule DonezoWeb.Router do
       live "/lists/:id/edit", ListLive.Index, :edit
       live "/lists/:id", ListLive.Show, :show
       live "/lists/:id/show/edit", ListLive.Show, :edit
+      live "/lists/:id/show/new_buzz", ListLive.Show, :new_buzz
       live "/lists/:list_id/buzzes", BuzzLive.Index, :index
       live "/lists/:list_id/buzzes/new", BuzzLive.Index, :new
       live "/lists/:list_id/buzzes/:id/edit", BuzzLive.Index, :edit

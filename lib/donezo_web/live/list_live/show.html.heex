@@ -4,6 +4,9 @@
     <.link patch={~p"/lists/#{@list}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit list</.button>
     </.link>
+    <.link patch={~p"/lists/#{@list}/show/new_buzz"}>
+      <.button>New Buzz</.button>
+    </.link>
   </:actions>
 </.header>
 
@@ -47,6 +50,20 @@
     title={@page_title}
     action={@live_action}
     list={@list}
+    current_user={@current_user}
+    patch={~p"/lists/#{@list}"}
+  />
+</.modal>
+
+<.modal :if={@live_action == :new_buzz} id="buzz-modal" show on_cancel={JS.patch(~p"/lists/#{@list}")}>
+  <.live_component
+    module={DonezoWeb.BuzzLive.FormComponent}
+    id={:new}
+    title={@page_title}
+    action={:new}
+    buzz={%Buzz{list_id: @list.id, user_id: @current_user.id}}
+    current_user={@current_user}
+    list_id={@list.id}
     patch={~p"/lists/#{@list}"}
   />
 </.modal>

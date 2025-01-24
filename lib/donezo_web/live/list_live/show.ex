@@ -3,6 +3,7 @@ defmodule DonezoWeb.ListLive.Show do
 
   alias Donezo.Lists
   alias Donezo.Buzzes
+  alias Donezo.Buzzes.Buzz
 
   @impl true
   def mount(_params, _session, socket) do
@@ -19,6 +20,11 @@ defmodule DonezoWeb.ListLive.Show do
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(:list, list)
      |> stream(:buzzes, buzzes)}
+  end
+
+  @impl true
+  def handle_info({DonezoWeb.BuzzLive.FormComponent, {:saved, buzz}}, socket) do
+    {:noreply, stream_insert(socket, :buzzes, buzz)}
   end
 
   @impl true
@@ -44,4 +50,5 @@ defmodule DonezoWeb.ListLive.Show do
 
   defp page_title(:show), do: "Show List"
   defp page_title(:edit), do: "Edit List"
+  defp page_title(:new_buzz), do: "New Buzz"
 end
