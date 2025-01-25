@@ -9,15 +9,22 @@ defmodule Donezo.Buzzes.Buzz do
     belongs_to :list, Donezo.Lists.List
     belongs_to :user, Donezo.Accounts.User
 
-    timestamps(type: :utc_datetime)
+    timestamps()
   end
 
   @doc false
   def changeset(buzz, attrs) do
     buzz
-    |> cast(attrs, [:title, :completed, :completed_at, :list_id, :user_id])
+    |> cast(attrs, [:title, :completed, :list_id, :user_id])
     |> validate_required([:title, :list_id, :user_id])
-    |> foreign_key_constraint(:list_id)
-    |> foreign_key_constraint(:user_id)
+    |> maybe_set_completed_at()
+  end
+
+  defp maybe_set_completed_at(changeset) do
+    case get_change(changeset, :completed) do
+      true -> put_change(changeset, :completed_at, DateTime.utc_now() |> DateTime.truncate(:second))
+      false -> put_change(changeset, :completed_at, nil)
+      nil -> changeset
+    end
   end
 end

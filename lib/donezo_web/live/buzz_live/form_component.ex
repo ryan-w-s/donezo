@@ -16,12 +16,15 @@ defmodule DonezoWeb.BuzzLive.FormComponent do
         for={@form}
         id="buzz-form"
         phx-target={@myself}
-        phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:title]} type="text" label="Title" />
-        <.input field={@form[:completed]} type="checkbox" label="Completed" />
-        <.input field={@form[:completed_at]} type="datetime-local" label="Completed at" />
+        <.input
+          field={@form[:title]}
+          type="text"
+          label="Title"
+          phx-debounce="blur"
+          phx-target={@myself}
+        />
         <:actions>
           <.button phx-disable-with="Saving...">Save Buzz</.button>
         </:actions>
@@ -32,18 +35,22 @@ defmodule DonezoWeb.BuzzLive.FormComponent do
 
   @impl true
   def update(%{buzz: buzz} = assigns, socket) do
+    changeset = Buzzes.change_buzz(buzz)
+
     {:ok,
      socket
      |> assign(assigns)
-     |> assign_new(:form, fn ->
-       to_form(Buzzes.change_buzz(buzz))
-     end)}
+     |> assign(:form, to_form(changeset))}
   end
 
   @impl true
   def handle_event("validate", %{"buzz" => buzz_params}, socket) do
-    changeset = Buzzes.change_buzz(socket.assigns.buzz, buzz_params)
-    {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
+    changeset =
+      socket.assigns.buzz
+      |> Buzzes.change_buzz(buzz_params)
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign(socket, form: to_form(changeset))}
   end
 
   def handle_event("save", %{"buzz" => buzz_params}, socket) do
@@ -61,11 +68,15 @@ defmodule DonezoWeb.BuzzLive.FormComponent do
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, form: to_form(changeset))}
+        {:noreply, assign(socket, :form, to_form(changeset))}
     end
   end
 
   defp save_buzz(socket, :new, buzz_params) do
+    buzz_params = buzz_params
+      |> Map.put("list_id", socket.assigns.list_id)
+      |> Map.put("user_id", socket.assigns.current_user.id)
+
     case Buzzes.create_buzz(buzz_params) do
       {:ok, buzz} ->
         notify_parent({:saved, buzz})
@@ -76,7 +87,7 @@ defmodule DonezoWeb.BuzzLive.FormComponent do
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, form: to_form(changeset))}
+        {:noreply, assign(socket, :form, to_form(changeset))}
     end
   end
 

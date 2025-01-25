@@ -15,8 +15,7 @@
   rows={@streams.buzzes}
   row_click={fn {_id, buzz} -> JS.navigate(~p"/lists/#{@list}/buzzes/#{buzz}") end}
 >
-  <:col :let={{_id, buzz}} label="Title">{buzz.title}</:col>
-  <:col :let={{_id, buzz}} label="Completed">
+  <:col :let={{_id, buzz}} label="Completed" class="w-5">
     <input
       type="checkbox"
       checked={buzz.completed}
@@ -24,6 +23,9 @@
       phx-value-id={buzz.id}
       class="rounded border-zinc-300 text-zinc-900 focus:ring-0"
     />
+  </:col>
+  <:col :let={{_id, buzz}} label="Title" class="text-left pl-0">
+    {buzz.title}
   </:col>
   <:action :let={{_id, buzz}}>
     <div class="sr-only">

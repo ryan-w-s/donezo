@@ -34,7 +34,7 @@ defmodule DonezoWeb.ListLive.Show do
     {:ok, updated_buzz} =
       Buzzes.update_buzz(buzz, %{
         completed: !buzz.completed,
-        completed_at: if(!buzz.completed, do: DateTime.utc_now(), else: nil)
+        completed_at: if(!buzz.completed, do: DateTime.utc_now() |> DateTime.truncate(:second), else: nil)
       })
 
     {:noreply, stream_insert(socket, :buzzes, updated_buzz)}
